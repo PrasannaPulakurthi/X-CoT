@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="preconnect" href="https://msrvtt.s3.ca-central-1.amazonaws.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>X‑CoT: Explainable Text‑to‑Video Retrieval</title>
+    <meta name="description" content="X‑CoT pairs text‑to‑video retrieval with LLM chain‑of‑thought to improve ranking and provide human‑readable rationales." />
+    <meta property="og:title" content="X‑CoT: Explainable Text‑to‑Video Retrieval" />
+    <meta property="og:description" content="LLM‑based chain‑of‑thought for explainable text‑to‑video retrieval." />
+    <meta property="og:type" content="website" />
+
+    <style>
+      :root{
+        --fg:#111;
+        --muted:#666;
+        --brand:#1a73e8; /* Google blue */
+        --accent:#428bad; /* your existing accent */
+        --bg:#fff;
+        --card:#f5f5f5;
+        --border:#ddd;
+        --ok:#10893e; /* green */
+        --bad:#c62828; /* red */
+        --maxw:1100px;
+      }
+      *{box-sizing:border-box}
+      html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji"}
+      a{color:var(--brand);text-decoration:none}
+      a:hover{text-decoration:underline}
+
+      /* Layout */
+      .container{max-width:var(--maxw);padding:0 16px;margin:0 auto}
+      header.hero{padding:40px 0 12px;border-bottom:1px solid var(--border)}
+      .title{font-size:clamp(28px,4vw,40px);line-height:1.15;margin:0 0 10px;text-align:center}
+
+      /* Authors & affiliations like UniPixel */
+      .byline{font-size:18px;text-align:center;color:var(--fg)}
+      .byline span{white-space:nowrap;margin:0 8px}
+      .byline sup{font-size:12px;color:var(--muted);margin-left:2px}
+      .affils{font-size:15px;text-align:center;color:var(--muted);margin-top:6px}
+      .affils span{display:inline-block;margin:0 10px}
+
+      /* Link badges row (Paper/Code/Demo/etc) */
+      .badges{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;align-items:center;margin:22px 0}
+      .badge{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid var(--border);border-radius:999px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.1)}
+      .badge img{width:18px;height:18px}
+
+      main section{padding:36px 0}
+      .section-title{font-size:24px;margin:0 0 12px;text-align:center;color:var(--accent)}
+
+      /* Demo area */
+      .controls{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:center;margin:6px 0 18px}
+      .controls button{font-size:18px;font-weight:600;border:none;background:transparent;color:#ad4242;cursor:pointer}
+      .controls select{font-size:16px;padding:6px 10px;border:1px solid var(--border);border-radius:8px}
+
+      .center{text-align:center}
+      .teaser{display:grid;gap:20px;justify-items:center}
+      .teaser video{max-width:100%;height:auto;border-radius:10px;border:1px solid var(--border)}
+
+      /* Grids for Top‑5 like UniPixel visual blocks */
+      .grid-5{display:grid;gap:12px;grid-template-columns:repeat(5,1fr)}
+      .grid-5 video{width:100%;height:auto;display:block;border-radius:10px;border:3px solid transparent}
+      .grid-5 .ok{border-color:var(--ok)}
+      .grid-5 .bad{border-color:var(--bad)}
+
+      @media (max-width:1100px){.grid-5{grid-template-columns:repeat(4,1fr)}}
+      @media (max-width:900px){.grid-5{grid-template-columns:repeat(3,1fr)}}
+      @media (max-width:640px){.grid-5{grid-template-columns:repeat(2,1fr)}}
+
+      /* Explanation card */
+      .explain{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin:0 auto;max-width:900px}
+      .explain ul{margin:0;padding-left:20px}
+
+      /* Abstract & Citation */
+      .abstract{margin-top: 48px;max-width:900px;margin:0 auto;font-size:18px;text-align:justify}
+      pre.bib{max-width:900px;margin:0 auto;background:var(--card);border:1px solid var(--border);padding:16px;border-radius:10px;overflow:auto}
+
+    </style>
+  </head>
+
+  <body onload="random('strict')">
+    <header class="hero">
+      <div class="container">
+        <h1 class="title">X‑CoT: Explainable Text‑to‑Video Retrieval via LLM‑based Chain‑of‑Thought Reasoning</h1>
+        <div class="byline">
+          <span><a href="https://www.prasannapulakurthi.com/" target="_blank">Prasanna Reddy Pulakurthi</a><sup>♠</sup></span>
+          <span><a href="https://jiamian-wang.github.io/" target="_blank">Jiamian Wang</a><sup>♠</sup></span>
+          <span><a href="https://www.rit.edu/directory/mxreee-majid-rabbani" target="_blank">Majid Rabbani</a><sup>♠</sup></span>
+          <span><a href="https://www.rit.edu/directory/sadeee-sohail-dianat" target="_blank">Sohail Dianat</a><sup>♠</sup></span>
+          <span><a href="https://ieeexplore.ieee.org/author/37281258600" target="_blank">Raghuveer Rao</a><sup>♦</sup></span>
+          <span><a href="https://ztao.cc/index.html" target="_blank">Zhiqiang Tao</a><sup>♠</sup></span>
+        </div>
+        <div class="affils">
+          <span><sup>♠</sup>Rochester Institute of Technology</span>
+          <span><sup>♦</sup>DEVCOM Army Research Laboratory</span>
+        </div>
+
+        <div class="badges">
+          <a class="badge" href="https://aclanthology.org/2025.emnlp-main.1588" target="_blank" rel="noopener">
+            <img alt="Paper" src="https://img.icons8.com/ios-filled/100/000000/document.png"/> <span>EMNLP 2025 Paper</span>
+          </a>
+          <a class="badge" href="https://huggingface.co/datasets/prasannareddyp/X-CoT" target="_blank" rel="noopener">
+            <img alt="Dataset" src="static/logos/hf-logo.png"/> <span>Hugging Face Dataset</span>
+          </a>
+          <a class="badge" href="https://github.com/PrasannaPulakurthi/X-CoT" target="_blank" rel="noopener">
+            <img alt="Code" src="https://img.icons8.com/ios-glyphs/100/000000/github.png"/> <span>Code & Demo</span>
+          </a>
+          <!-- Optional demo slot if you host one later -->
+          <!-- <a class="badge" href="#demo"><img alt="Demo" src="..."/> <span>Interactive Demo</span></a> -->
+        </div>
+      </div>
+    </header>
+
+    <!-- Method Explanation Video -->
+    <section class="container" id="method-video" style="margin-top:32px; text-align:center;">
+      <h2 class="section-title">Method Overview Video</h2>
+      <p class="abstract" style="text-align:center; max-width:800px; margin:0 auto 16px;">
+        Watch a brief walkthrough explaining the X-CoT framework.
+      </p>
+      <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:12px; max-width:900px; margin:0 auto;">
+        <iframe 
+          src="https://www.youtube-nocookie.com/embed/lA_nrfj6dLM" 
+          title="X-CoT Method Overview" 
+          frameborder="0" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allowfullscreen 
+          style="position:absolute; top:0; left:0; width:100%; height:100%; border-radius:12px;">
+        </iframe>
+      </div>
+    </section>
+
+    <main>
+      <section class="container" id="demo">
+        <h2 class="section-title" style="margin-top:24px">Interactive Demo</h2>
+        <p class="abstract" style="text-align:center">We show a text-video pair from the MSR-VTT 1K test split, the initial retriever (X-Pool) top-5, and X-CoT's re-ranked top-5 with explanations. The ground-truth video is highlighted in green if it appears in the top-5.</p>
+
+        <div class="controls" style="margin-top:24px; display:flex; justify-content:center; align-items:center; gap:16px;">
+          <button id="strict_button" onclick="random('strict')" 
+            style="font-size:22px; padding:8px 12px; border:1px solid rgba(0,0,0,.1); border-radius:10px; background:#fff; box-shadow:0 2px 4px rgba(0,0,0,.1); color:rgb(153,71,51); font-weight:bold; cursor:pointer; transition:all 0.3s ease;">
+            👉 Try a Successful Example 🎬
+          </button>
+          <button id="random_button" onclick="random('random')" 
+            style="font-size:22px; padding:8px 12px; border:1px solid rgba(0,0,0,.1); border-radius:10px; background:#fff; box-shadow:0 2px 4px rgba(0,0,0,.1); color:rgb(153,71,51); font-weight:bold; cursor:pointer; transition:all 0.3s ease;">
+            👉 Try a Random Example 🎬
+          </button>
+        </div>
+
+        <div class="center" id="caption"><span style="margin-top:24px;font-size: 22px;color:var(--accent);font-weight:700">Text Query</span><br>a person is connecting something to system</div>
+
+        <div class="teaser" style="margin:14px 0 8px">
+          <div class="center" style="font-size: 22px;color:var(--accent);font-weight:700">Ground Truth Video</div>
+          <video id="vid" width="640" height="480" autoplay muted loop playsinline webkit-playsinline>
+            <source src="https://msrvtt.s3.ca-central-1.amazonaws.com/videos/video9770.mp4" type="video/mp4" />
+          </video>
+        </div>
+
+        <div class="center" style="margin-top:24px;font-size: 22px;;color:var(--accent);font-weight:700">Initial Retriever (X‑Pool) Top‑5 Retrieved Videos</div>
+        <div class="grid-5" style="margin-top:8px">
+          <video id="xp-top-1" autoplay muted loop playsinline webkit-playsinline></video>
+          <video id="xp-top-2" autoplay muted loop playsinline webkit-playsinline></video>
+          <video id="xp-top-3" autoplay muted loop playsinline webkit-playsinline></video>
+          <video id="xp-top-4" autoplay muted loop playsinline webkit-playsinline></video>
+          <video id="xp-top-5" autoplay muted loop playsinline webkit-playsinline></video>
+        </div>
+
+        <div class="center" style="margin-top:24px;font-size: 22px;color:var(--accent);font-weight:700">X‑CoT Top‑5 Retrieved Videos</div>
+        <div class="grid-5" style="margin-top:8px">
+          <video id="xcot-top-1" autoplay muted loop playsinline webkit-playsinline></video>
+          <video id="xcot-top-2" autoplay muted loop playsinline webkit-playsinline></video>
+          <video id="xcot-top-3" autoplay muted loop playsinline webkit-playsinline></video>
+          <video id="xcot-top-4" autoplay muted loop playsinline webkit-playsinline></video>
+          <video id="xcot-top-5" autoplay muted loop playsinline webkit-playsinline></video>
+        </div>
+
+        <h3 class="section-title" style="margin-top:24px">X‑CoT Explanations</h3>
+        <div id="xcot-explanation-box" class="explain"><em>Explanations will appear here.</em></div>
+      </section>
+
+      <section class="container" style="margin-top:24px" id="abstract">
+        <h2 class="section-title">Abstract</h2>
+        <p class="abstract">
+          Prevalent text‑to‑video retrieval systems mainly adopt embedding models for feature extraction and compute cosine similarities for ranking. However, this design presents two limitations. Low‑quality text‑video data pairs could compromise the retrieval, yet are hard to identify and examine. Cosine similarity alone provides no explanation for the ranking results, limiting the interpretability. We ask that can we interpret the ranking results, so as to assess the retrieval models and examine the text‑video data? This work proposes X‑CoT, an explainable retrieval framework upon LLM CoT reasoning in place of the embedding model‑based similarity ranking. We first expand the existing benchmarks with additional video annotations to support semantic understanding and reduce data bias. We also devise a retrieval CoT consisting of pairwise comparison steps, yielding detailed reasoning and complete ranking. X‑CoT empirically improves the retrieval performance and produces detailed rationales. It also facilitates the model behavior and data quality analysis.
+        </p>
+      </section>
+
+      <!-- -------- Poster -------- -->
+      <section class="container" id="poster" style="margin-top:24px">
+        <h2 class="section-title">Poster</h2>
+
+        <!-- quick actions -->
+        <div class="badges" style="margin-top:8px">
+          <a class="badge" href="static/EMNLP_2025_Main-3716_Poster.pdf" target="_blank" rel="noopener">
+            <img alt="Open" src="https://img.icons8.com/ios-filled/100/000000/external-link.png"/>
+            <span>Open in New Tab</span>
+          </a>
+          <a class="badge" href="static/EMNLP_2025_Main-3716_Poster.pdf" download>
+            <img alt="Download" src="https://img.icons8.com/ios-filled/100/000000/download.png"/>
+            <span>Download Poster</span>
+          </a>
+        </div>
+
+        <!-- embedded viewer -->
+        <div style="border:1px solid var(--border); border-radius:12px; overflow:hidden; background:var(--card);">
+          <iframe
+            src="static/EMNLP_2025_Main-3716_Poster.pdf#view=FitH"
+            title="X-CoT Poster PDF"
+            style="width:100%; height:80vh; border:0;">
+          </iframe>
+        </div>
+
+      <section class="container" style="margin-top:24px" id="citation">
+        <h2 class="section-title">Citation</h2>
+        <p class="abstract">If you find this work valuable for your research, we kindly request that you cite the following paper:</p>
+        <pre class="bib" style="margin-top:8px;margin-bottom:8px;">@inproceedings{pulakurthi2025x,
+  title={X-CoT: Explainable Text-to-Video Retrieval via LLM-based Chain-of-Thought Reasoning},
+  author={Pulakurthi, Prasanna Reddy and Wang, Jiamian and Rabbani, Majid and Dianat, Sohail and Rao, Raghuveer and Tao, Zhiqiang},
+  booktitle={Proceedings of the 2025 Conference on Empirical Methods in Natural Language Processing},
+  pages={31172--31183},
+  year={2025}
+}</pre>
+      </section>
+    </main>
+
+
+    <script>
+      let MSRVTT=null, XP_TOP5=null, XCOT_TOP5=null, XCOT_EXPL=null;
+      let IMPROVED_INDICES=[];
+      const NOT_IN_TOP5_RANK=6, MAX_TRIES=50;
+
+      // --- Formatting helpers for X‑CoT explanations ---
+      function escapeHTML(s){
+        return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+      }
+
+      function formatXcotText(s){
+        let t=escapeHTML(String(s));
+        t=t.replace(/\\n/g,"<br>");
+        t=t.replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>");
+        return t;
+      }
+
+      function getRandomInt(min,max){return Math.floor(Math.random()*(max-min)+min)}
+      function loadJSONSync(url){
+        const req=new XMLHttpRequest();
+        req.open("GET",url,false); req.send(null);
+        return (req.status>=200 && req.status<300)? JSON.parse(req.responseText): null;
+      }
+
+      function indexInTop5(arr,target){
+        const pos=arr.indexOf(target);
+        return (pos===-1)? NOT_IN_TOP5_RANK : (pos+1);
+      }
+
+      function maybeInitData(){
+        if(!MSRVTT) MSRVTT=loadJSONSync("static/msrvtt_jsfusion.json");
+        if(!XP_TOP5) XP_TOP5=loadJSONSync("static/xp_top5_retrieved.json");
+        if(!XCOT_TOP5) XCOT_TOP5=loadJSONSync("static/xcot_top5_retrieved.json");
+        if(!XCOT_EXPL) XCOT_EXPL=loadJSONSync("static/xcot_explaination.json");
+      }
+
+      // strict = GT is in X‑CoT top5 AND ranked better than X‑Pool
+      function isStrictlyBetter(q){
+        const xpRank=indexInTop5(XP_TOP5[q],q);
+        const xcRank=indexInTop5(XCOT_TOP5[q],q);
+        return (xcRank<=5 && xcRank<xpRank);
+      }
+
+      function computeStrictImproved(){
+        const N=Math.min(XP_TOP5.length,XCOT_TOP5.length);
+        const improved=[];
+        for(let q=0;q<N;q++){ if(isStrictlyBetter(q)) improved.push(q); }
+        return improved;
+      }
+
+      function pickQueryIndex(mode){
+        if (mode === "strict") {
+          if (!IMPROVED_INDICES.length) IMPROVED_INDICES = computeStrictImproved();
+          if (IMPROVED_INDICES.length)
+            return IMPROVED_INDICES[getRandomInt(0, IMPROVED_INDICES.length)];
+          return getRandomInt(0, MSRVTT.length);
+        }
+        return getRandomInt(0, MSRVTT.length);
+      }
+
+      function renderExplanation(num){
+        const box=document.getElementById("xcot-explanation-box");
+        if(!box) return;
+        try{
+          if(XCOT_EXPL && (num in XCOT_EXPL)){
+            const entry=XCOT_EXPL[num];
+            if(entry && entry["Pairwise Reason"] && Array.isArray(entry["Pairwise Reason"])){
+              const items=entry["Pairwise Reason"].map(pair=>{
+                const raw=Array.isArray(pair)&&pair.length>1? String(pair[1]) : String(pair);
+                return `<li>${formatXcotText(raw)}</li>`;
+              }).join("");
+              box.innerHTML=`<ul>${items}</ul>`;
+            }else{
+              if(typeof entry==="string"){
+                box.innerHTML=`<div style="white-space:pre-wrap">${formatXcotText(entry)}</div>`;
+              }else{
+                box.innerHTML=`<pre style="white-space:pre-wrap">${escapeHTML(JSON.stringify(entry,null,2))}</pre>`;
+              }
+            }
+          }else{
+            box.innerHTML="<em>No explanation available.</em>";
+          }
+        }catch(e){ box.innerHTML="<em>Failed to render explanation.</em>"; }
+      }
+
+      function random(modeParam){
+        maybeInitData();
+        const mode = modeParam || 'random';
+        let num = pickQueryIndex(mode);
+
+        if (mode === "strict") {
+          let tries = 0;
+          while (tries < MAX_TRIES && !isStrictlyBetter(num)) {
+            if (IMPROVED_INDICES.length) {
+              num = IMPROVED_INDICES[getRandomInt(0, IMPROVED_INDICES.length)];
+            } else {
+              num = getRandomInt(0, MSRVTT.length);
+            }
+            tries++;
+          }
+          if (!isStrictlyBetter(num)) return;
+        }
+
+        // GT video + caption
+        const gtSrc=`https://msrvtt.s3.ca-central-1.amazonaws.com/videos/${MSRVTT[num]['video_id']}.mp4`;
+        document.getElementById('vid').src=gtSrc;
+        document.getElementById('caption').innerHTML=`<span style="font-size: 22px;color:var(--accent);font-weight:700">Text Query</span><br>${MSRVTT[num]['sentence']}`;
+
+        // X‑Pool retrieved
+        XP_TOP5[num].forEach((idx,i)=>{
+          const el=document.getElementById(`xp-top-${i+1}`);
+          el.src=`https://msrvtt.s3.ca-central-1.amazonaws.com/videos/${MSRVTT[idx]['video_id']}.mp4`;
+          el.className = (idx===num)? 'ok' : 'bad';
+        });
+        // X‑CoT retrieved
+        XCOT_TOP5[num].forEach((idx,i)=>{
+          const el=document.getElementById(`xcot-top-${i+1}`);
+          el.src=`https://msrvtt.s3.ca-central-1.amazonaws.com/videos/${MSRVTT[idx]['video_id']}.mp4`;
+          el.className = (idx===num)? 'ok' : 'bad';
+        });
+        renderExplanation(num);
+      }
+    </script>
+  </body>
+</html>
