@@ -1,0 +1,39 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite the following paper."
+title: "X-CoT: Explainable Text-to-Video Retrieval via LLM-based Chain-of-Thought Reasoning"
+
+authors:
+  - family-names: Pulakurthi
+    given-names: Prasanna Reddy
+  - family-names: Wang
+    given-names: Jiamian
+  - family-names: Rabbani
+    given-names: Majid
+  - family-names: Dianat
+    given-names: Sohail
+  - family-names: Rao
+    given-names: Raghuveer
+  - family-names: Tao
+    given-names: Zhiqiang
+
+repository-code: "https://github.com/PrasannaPulakurthi/X-CoT"
+
+preferred-citation:
+  type: conference-paper
+  title: "X-CoT: Explainable Text-to-Video Retrieval via LLM-based Chain-of-Thought Reasoning"
+  authors:
+    - family-names: Pulakurthi
+      given-names: Prasanna Reddy
+    - family-names: Wang
+      given-names: Jiamian
+    - family-names: Rabbani
+      given-names: Majid
+    - family-names: Dianat
+      given-names: Sohail
+    - family-names: Rao
+      given-names: Raghuveer
+    - family-names: Tao
+      given-names: Zhiqiang
+  year: 2025
+  collection-title: "Proceedings of the 2025 Conference on Empirical Methods in Natural Language Processing"
+  pages: "31172--31183"
