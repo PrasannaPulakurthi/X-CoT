@@ -10,7 +10,7 @@ from modules.metrics import t2v_metrics, v2t_metrics
 from modules.loss import LossFactory
 from trainer.trainer_xpool import Trainer
 import time
-
+import gdown
 
 def main():
     config = AllConfig()
@@ -57,6 +57,19 @@ def main():
                       tokenizer=tokenizer)
 
     if config.load_epoch is not None:
+        # Check if the model exists
+        if not os.path.exists(os.path.join(config.model_path, "model_best.pth")):
+            print(f"Downloading X-Pool Model for {config.dataset_name} dataset.")
+            if config.dataset_name == "MSRVTT":
+                gdown.download("https://drive.google.com/drive/u/7/folders/13Fx-4Zo9LaDsQ3Y0FtH7TIueDk2m2Sbv", "outputs/MSRVTT/model_best.pth", quiet=False)
+            elif config.dataset_name == "MSVD":
+                gdown.download("https://drive.google.com/drive/u/7/folders/1OaEze4V5vuDdRRA2ZLNCYMbYTT21dltv", "outputs/MSVD/model_best.pth", quiet=False)
+            elif config.dataset_name == "DiDeMo":
+                gdown.download("https://drive.google.com/drive/u/7/folders/1RTINoqvVtSqXn25kLUB77psVG3jDyGeq", "outputs/DiDeMo/model_best.pth", quiet=False)
+            elif config.dataset_name == "LSMDC":
+                gdown.download("https://drive.google.com/drive/u/7/folders/14-ampIRqEvJXwHuTjfak8wVMiv1nd12_", "outputs/LSMDC/model_best.pth", quiet=False)
+            else:
+                print("X-Pool model for {config.dataset_name} dataset is not avilable.")
         if config.load_epoch > 0:
             trainer.load_checkpoint("checkpoint-epoch{}.pth".format(config.load_epoch))
         else:
