@@ -12,7 +12,8 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, GenerationConfig
 from collections import defaultdict, deque
 from tqdm import tqdm
 from concurrent.futures import ThreadPoolExecutor, as_completed
-
+import gdown
+import os
 
 class LLMChat:
     def __init__(self, model_name):
@@ -169,17 +170,17 @@ def evaluate_llm_reranking(cfg):
     )
     video_breakdowns_path = f"outputs/{cfg.dataset_name}/video_breakdowns_{cfg.test_mode}.jsonl"
     if not os.path.exists(video_breakdowns_path):
-        print(f"Downloading X-CoT video breakdowns for {config.dataset_name} dataset.")
-        if config.dataset_name == "MSRVTT":
-            gdown.download("https://drive.google.com/file/d/1B7AzG7oHGzAOf0EK2bdKNbjTOVVjbiI3/view", "outputs/MSRVTT/video_breakdowns_benchmark.jsonl", quiet=False, fuzzy=True)
-        elif config.dataset_name == "MSVD":
-            gdown.download("https://drive.google.com/file/d/1QM9b8Y6S7rc_2KZuKdmgeUZONE1pke2f/view", "outputs/MSVD/video_breakdowns_benchmark.jsonl", quiet=False, fuzzy=True)
-        elif config.dataset_name == "DiDeMo":
-            gdown.download("https://drive.google.com/file/d/1-soki49gJtqJxgUolmzWhVggYBNDvc_Z/view", "outputs/DiDeMo/video_breakdowns_benchmark.jsonl", quiet=False, fuzzy=True)
-        elif config.dataset_name == "LSMDC":
-            gdown.download("https://drive.google.com/file/d/11U0m44Cj2g5v3huLyHfJtsPGun6teapj/view", "outputs/LSMDC/video_breakdowns_benchmark.jsonl", quiet=False, fuzzy=True)
+        print(f"Downloading X-CoT video breakdowns for {cfg.dataset_name} dataset.")
+        if cfg.dataset_name == "MSRVTT":
+            gdown.download_folder("https://drive.google.com/drive/folders/1j2nN895owtmJ4f_q5G_0wSB6nX1hjTxX", output="outputs/MSRVTT/", quiet=False, use_cookies=False)
+        elif cfg.dataset_name == "MSVD":
+            gdown.download_folder("https://drive.google.com/drive/folders/1iXdTcoLpL6pJv17uLCurDiPdwDGIE8P8", output="outputs/MSVD/", quiet=False, use_cookies=False)
+        elif cfg.dataset_name == "DiDeMo":
+            gdown.download_folder("https://drive.google.com/drive/folders/1GHaeI9TxvBfNfNIkSXeuTEN5CWT8X1OI", output="outputs/DiDeMo/", quiet=False, use_cookies=False)
+        elif cfg.dataset_name == "LSMDC":
+            gdown.download_folder("https://drive.google.com/drive/folders/1cWIQInhcUd1JdVXKdUtxupC7gp-EY3uU", output="outputs/LSMDC/", quiet=False, use_cookies=False)
         else:
-            print(f"X-CoT video breakdowns for {config.dataset_name} dataset is not avilable.")
+            print(f"X-CoT video breakdowns for {cfg.dataset_name} dataset is not avilable.")
     breakdowns = load_video_breakdowns(video_breakdowns_path)
 
     # evaluation
