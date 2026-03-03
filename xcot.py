@@ -170,13 +170,13 @@ def evaluate_llm_reranking(cfg):
     if not os.path.exists(video_breakdowns_path) or not os.path.exists(initial_ranks_path):
         print(f"Downloading X-CoT video breakdowns for {cfg.dataset_name} dataset.")
         if cfg.dataset_name == "MSRVTT":
-            gdown.download_folder("https://drive.google.com/drive/folders/1j2nN895owtmJ4f_q5G_0wSB6nX1hjTxX", output="outputs/MSRVTT/", quiet=False, use_cookies=False)
+            gdown.download_folder("https://drive.google.com/drive/folders/1j2nN895owtmJ4f_q5G_0wSB6nX1hjTxX", output="outputs/", quiet=False, use_cookies=False)
         elif cfg.dataset_name == "MSVD":
-            gdown.download_folder("https://drive.google.com/drive/folders/1iXdTcoLpL6pJv17uLCurDiPdwDGIE8P8", output="outputs/MSVD/", quiet=False, use_cookies=False)
+            gdown.download_folder("https://drive.google.com/drive/folders/1iXdTcoLpL6pJv17uLCurDiPdwDGIE8P8", output="outputs/", quiet=False, use_cookies=False)
         elif cfg.dataset_name == "DiDeMo":
-            gdown.download_folder("https://drive.google.com/drive/folders/1GHaeI9TxvBfNfNIkSXeuTEN5CWT8X1OI", output="outputs/DiDeMo/", quiet=False, use_cookies=False)
+            gdown.download_folder("https://drive.google.com/drive/folders/1GHaeI9TxvBfNfNIkSXeuTEN5CWT8X1OI", output="outputs/", quiet=False, use_cookies=False)
         elif cfg.dataset_name == "LSMDC":
-            gdown.download_folder("https://drive.google.com/drive/folders/1cWIQInhcUd1JdVXKdUtxupC7gp-EY3uU", output="outputs/LSMDC/", quiet=False, use_cookies=False)
+            gdown.download_folder("https://drive.google.com/drive/folders/1cWIQInhcUd1JdVXKdUtxupC7gp-EY3uU", output="outputs/", quiet=False, use_cookies=False)
         else:
             print(f"X-CoT video breakdowns for {cfg.dataset_name} dataset is not avilable.")
     breakdowns = load_video_breakdowns(video_breakdowns_path)
