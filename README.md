@@ -25,8 +25,9 @@ It then prompts an LLM to compare pairs of candidate videos against the query, u
 
 [![X-CoT – Open In Colab](https://img.shields.io/badge/X%E2%80%90CoT-Open%20In%20Colab-blue?logo=googlecolab)](https://colab.research.google.com/github/PrasannaPulakurthi/X-CoT/blob/main/colab_notebooks/XCoT.ipynb)
 
+    python xcot.py --exp_name=MSRVTT --dataset_name=MSRVTT --topk=20 --topk_retrieval_method=xpool
 
-## Local Setup
+## Detailed Local Setup
 
 ## Step 1: Obtain Initial Retriever Results
 
