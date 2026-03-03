@@ -63,11 +63,11 @@ def main():
             if config.dataset_name == "MSRVTT":
                 gdown.download("https://drive.google.com/file/d/1porWLljGecfExL3H3-ucl_4-z7mY-ZKL/view", "outputs/MSRVTT/model_best.pth", quiet=False, fuzzy=True)
             elif config.dataset_name == "MSVD":
-                gdown.download("https://drive.google.com/file/d/1IdCAmUBo8ScKtLKGnLfvz77RSfDZOBAu/view", "outputs/MSVD/model_best.pth", quiet=False)
+                gdown.download("https://drive.google.com/file/d/1IdCAmUBo8ScKtLKGnLfvz77RSfDZOBAu/view", "outputs/MSVD/model_best.pth", quiet=False, fuzzy=True)
             elif config.dataset_name == "DiDeMo":
-                gdown.download("https://drive.google.com/file/d/1Hr47o5Wb0e2jZj-mR16SIcy312NjlWFO/view", "outputs/DiDeMo/model_best.pth", quiet=False)
+                gdown.download("https://drive.google.com/file/d/1Hr47o5Wb0e2jZj-mR16SIcy312NjlWFO/view", "outputs/DiDeMo/model_best.pth", quiet=False, fuzzy=True)
             elif config.dataset_name == "LSMDC":
-                gdown.download("https://drive.google.com/file/d/12f7jJ63OnywTAg431I4eLRRrJRo7zJI7/view", "outputs/LSMDC/model_best.pth", quiet=False)
+                gdown.download("https://drive.google.com/file/d/12f7jJ63OnywTAg431I4eLRRrJRo7zJI7/view", "outputs/LSMDC/model_best.pth", quiet=False, fuzzy=True)
             else:
                 print("X-Pool model for {config.dataset_name} dataset is not avilable.")
         if config.load_epoch > 0:
