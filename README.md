@@ -49,7 +49,7 @@ See `initial_retrievers_cmds.sh` for examples of CLI commands.
 
     python xpool_ranking.py --test_mode=benchmark --exp_name=MSRVTT --videos_dir=data/MSRVTT/videos/all --batch_size=32 --huggingface --load_epoch=-1 --dataset_name=MSRVTT --retrieve_topk --topk=20 --topk_retrieval_method=xpool
 
-- To run XPool, you will need the pretrained weights. Download the pretrained X-Pool weights from [[Google Drive]](https://drive.google.com/drive/folders/1IKqxZh--MatU_UdKV99FZAVrbaK7J00M?usp=sharing) and place them in `outputs/<dataset>/model_best.pth`
+- The pretrained X-Pool weights are automatically downloaded from [[Google Drive]](https://drive.google.com/drive/folders/1IKqxZh--MatU_UdKV99FZAVrbaK7J00M?usp=sharing) and placed in `outputs/<dataset>/model_best.pth`
 - Initial retriever results will be saved in `outputs/<dataset>/<method>_ranking_<mode>.jsonl`.
 
 
