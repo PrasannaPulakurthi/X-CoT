@@ -167,9 +167,20 @@ def evaluate_llm_reranking(cfg):
     ranks_dict = load_ranking_info(
         f"outputs/{cfg.dataset_name}/{cfg.topk_retrieval_method}_ranking_{cfg.test_mode}.jsonl"
     )
-    breakdowns = load_video_breakdowns(
-        f"outputs/{cfg.dataset_name}/video_breakdowns_{cfg.test_mode}.jsonl"
-    )
+    video_breakdowns_path = f"outputs/{cfg.dataset_name}/video_breakdowns_{cfg.test_mode}.jsonl"
+    if not os.path.exists(video_breakdowns_path):
+        print(f"Downloading X-CoT video breakdowns for {config.dataset_name} dataset.")
+        if config.dataset_name == "MSRVTT":
+            gdown.download("https://drive.google.com/file/d/1B7AzG7oHGzAOf0EK2bdKNbjTOVVjbiI3/view", "outputs/MSRVTT/video_breakdowns_benchmark.jsonl", quiet=False, fuzzy=True)
+        elif config.dataset_name == "MSVD":
+            gdown.download("https://drive.google.com/file/d/1QM9b8Y6S7rc_2KZuKdmgeUZONE1pke2f/view", "outputs/MSVD/video_breakdowns_benchmark.jsonl", quiet=False, fuzzy=True)
+        elif config.dataset_name == "DiDeMo":
+            gdown.download("https://drive.google.com/file/d/1-soki49gJtqJxgUolmzWhVggYBNDvc_Z/view", "outputs/DiDeMo/video_breakdowns_benchmark.jsonl", quiet=False, fuzzy=True)
+        elif config.dataset_name == "LSMDC":
+            gdown.download("https://drive.google.com/file/d/11U0m44Cj2g5v3huLyHfJtsPGun6teapj/view", "outputs/LSMDC/video_breakdowns_benchmark.jsonl", quiet=False, fuzzy=True)
+        else:
+            print(f"X-CoT video breakdowns for {config.dataset_name} dataset is not avilable.")
+    breakdowns = load_video_breakdowns(video_breakdowns_path)
 
     # evaluation
     r1=r5=r10=0
