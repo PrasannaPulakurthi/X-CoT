@@ -93,7 +93,7 @@ class BaseTrainer:
         """
         checkpoint_path = os.path.join(self.checkpoint_dir, model_name)
         print("Loading checkpoint: {} ...".format(checkpoint_path))
-        checkpoint = torch.load(checkpoint_path)
+        checkpoint = torch.load(checkpoint_path, weights_only=False)
         self.start_epoch = checkpoint['epoch'] + 1 if 'epoch' in checkpoint else 1
         state_dict = checkpoint['state_dict']
         
