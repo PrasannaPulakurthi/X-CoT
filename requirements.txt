@@ -2,3 +2,4 @@ ujson==5.10.0
 transformers==4.51.3
 choix==0.3.6
 accelerate==0.29.1
+gdown==4.7.3
