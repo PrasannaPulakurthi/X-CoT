@@ -165,11 +165,9 @@ def evaluate_llm_reranking(cfg):
     # chat = LLMChatBig("Qwen/Qwen2.5-14B-Instruct-1M")
 
     # load data
-    ranks_dict = load_ranking_info(
-        f"outputs/{cfg.dataset_name}/{cfg.topk_retrieval_method}_ranking_{cfg.test_mode}.jsonl"
-    )
     video_breakdowns_path = f"outputs/{cfg.dataset_name}/video_breakdowns_{cfg.test_mode}.jsonl"
-    if not os.path.exists(video_breakdowns_path):
+    initial_ranks_path = f"outputs/{cfg.dataset_name}/{cfg.topk_retrieval_method}_ranking_{cfg.test_mode}.jsonl"
+    if not os.path.exists(video_breakdowns_path) or not os.path.exists(initial_ranks_path):
         print(f"Downloading X-CoT video breakdowns for {cfg.dataset_name} dataset.")
         if cfg.dataset_name == "MSRVTT":
             gdown.download_folder("https://drive.google.com/drive/folders/1j2nN895owtmJ4f_q5G_0wSB6nX1hjTxX", output="outputs/MSRVTT/", quiet=False, use_cookies=False)
@@ -182,6 +180,7 @@ def evaluate_llm_reranking(cfg):
         else:
             print(f"X-CoT video breakdowns for {cfg.dataset_name} dataset is not avilable.")
     breakdowns = load_video_breakdowns(video_breakdowns_path)
+    ranks_dict = load_ranking_info(initial_ranks_path)
 
     # evaluation
     r1=r5=r10=0
