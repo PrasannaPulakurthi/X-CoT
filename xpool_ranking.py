@@ -69,7 +69,7 @@ def main():
             elif config.dataset_name == "LSMDC":
                 gdown.download("https://drive.google.com/file/d/12f7jJ63OnywTAg431I4eLRRrJRo7zJI7/view", "outputs/LSMDC/model_best.pth", quiet=False, fuzzy=True)
             else:
-                print("X-Pool model for {config.dataset_name} dataset is not avilable.")
+                print(f"X-Pool model for {config.dataset_name} dataset is not avilable.")
         if config.load_epoch > 0:
             trainer.load_checkpoint("checkpoint-epoch{}.pth".format(config.load_epoch))
         else:
