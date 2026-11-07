@@ -8,6 +8,7 @@ import numpy as np
 import choix
 from modules.breakdown_utils import load_video_breakdowns
 from modules.reranking_utils import load_ranking_info, compute_reranked_recalls
+from modules.hf_download import ensure_xcot_inputs
 from transformers import AutoTokenizer, AutoModelForCausalLM, GenerationConfig
 from collections import defaultdict, deque
 from tqdm import tqdm
@@ -107,12 +108,11 @@ def evaluate_llm_reranking(cfg):
     # chat = LLMChatBig("Qwen/Qwen2.5-14B-Instruct-1M")
 
     # load data
-    ranks_dict = load_ranking_info(
-        f"outputs/{cfg.dataset_name}/{cfg.topk_retrieval_method}_ranking_{cfg.test_mode}.jsonl"
-    )
-    breakdowns = load_video_breakdowns(
-        f"outputs/{cfg.dataset_name}/video_breakdowns_{cfg.test_mode}.jsonl"
-    )
+    # Auto-downloads from https://huggingface.co/datasets/prasannareddyp/X-CoT if missing
+    initial_ranks_path, video_breakdowns_path = ensure_xcot_inputs(
+        cfg.dataset_name, cfg.topk_retrieval_method, cfg.test_mode)
+    ranks_dict = load_ranking_info(initial_ranks_path)
+    breakdowns = load_video_breakdowns(video_breakdowns_path)
 
     # evaluation
     r1=r5=r10=0
