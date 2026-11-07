@@ -12,7 +12,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, GenerationConfig
 from collections import defaultdict, deque
 from tqdm import tqdm
 from concurrent.futures import ThreadPoolExecutor, as_completed
-import gdown
+from modules.hf_download import ensure_xcot_inputs
 import os
 
 class LLMChat:
@@ -165,20 +165,9 @@ def evaluate_llm_reranking(cfg):
     # chat = LLMChatBig("Qwen/Qwen2.5-14B-Instruct-1M")
 
     # load data
-    video_breakdowns_path = f"outputs/{cfg.dataset_name}/video_breakdowns_{cfg.test_mode}.jsonl"
-    initial_ranks_path = f"outputs/{cfg.dataset_name}/{cfg.topk_retrieval_method}_ranking_{cfg.test_mode}.jsonl"
-    if not os.path.exists(video_breakdowns_path) or not os.path.exists(initial_ranks_path):
-        print(f"Downloading X-CoT video breakdowns for {cfg.dataset_name} dataset.")
-        if cfg.dataset_name == "MSRVTT":
-            gdown.download_folder("https://drive.google.com/drive/folders/1j2nN895owtmJ4f_q5G_0wSB6nX1hjTxX", output="outputs/", quiet=False, use_cookies=False)
-        elif cfg.dataset_name == "MSVD":
-            gdown.download_folder("https://drive.google.com/drive/folders/1iXdTcoLpL6pJv17uLCurDiPdwDGIE8P8", output="outputs/", quiet=False, use_cookies=False)
-        elif cfg.dataset_name == "DiDeMo":
-            gdown.download_folder("https://drive.google.com/drive/folders/1GHaeI9TxvBfNfNIkSXeuTEN5CWT8X1OI", output="outputs/", quiet=False, use_cookies=False)
-        elif cfg.dataset_name == "LSMDC":
-            gdown.download_folder("https://drive.google.com/drive/folders/1cWIQInhcUd1JdVXKdUtxupC7gp-EY3uU", output="outputs/", quiet=False, use_cookies=False)
-        else:
-            print(f"X-CoT video breakdowns for {cfg.dataset_name} dataset is not avilable.")
+    # Auto-downloads from https://huggingface.co/datasets/prasannareddyp/X-CoT if missing
+    initial_ranks_path, video_breakdowns_path = ensure_xcot_inputs(
+        cfg.dataset_name, cfg.topk_retrieval_method, cfg.test_mode)
     breakdowns = load_video_breakdowns(video_breakdowns_path)
     ranks_dict = load_ranking_info(initial_ranks_path)
 

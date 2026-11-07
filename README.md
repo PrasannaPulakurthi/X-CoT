@@ -31,9 +31,34 @@ It then prompts an LLM to compare pairs of candidate videos against the query, u
 
 ## Step 1: Obtain Initial Retriever Results
 
-### Option 1
+### Option 1 (Recommended): Download from Hugging Face
 
-Download the provided initial retrieval results from the [[Hugging Face]](https://huggingface.co/datasets/prasannareddyp/X-CoT/tree/main) link and place them at: `outputs/<dataset>/<method>_ranking_<mode>.jsonl`
+The precomputed initial retrieval results (CLIP, VLM2Vec, X-Pool) and video breakdowns for MSRVTT, MSVD, DiDeMo, and LSMDC are hosted on [[Hugging Face]](https://huggingface.co/datasets/prasannareddyp/X-CoT/tree/main).
+
+**Automatic:** `xcot.py` and `xcot_explanation.py` download the files they need on the first run if they are not already in `outputs/`. Nothing else is required.
+
+**Manual:** To download them ahead of time:
+
+```bash
+pip install "huggingface_hub>=0.30.0"
+```
+
+```python
+from huggingface_hub import hf_hub_download, snapshot_download
+
+REPO = "prasannareddyp/X-CoT"
+
+# Everything (all four datasets, all retrievers; MSVD rankings are ~480 MB each)
+snapshot_download(repo_id=REPO, repo_type="dataset", local_dir="./")
+
+# Individual files, e.g. X-Pool first-stage ranking and video breakdowns for MSVD
+hf_hub_download(repo_id=REPO, filename="outputs/MSVD/xpool_ranking_benchmark.jsonl",
+                repo_type="dataset", local_dir="./")
+hf_hub_download(repo_id=REPO, filename="outputs/MSVD/video_breakdowns_benchmark.jsonl",
+                repo_type="dataset", local_dir="./")
+```
+
+Files land at `outputs/<dataset>/<method>_ranking_benchmark.jsonl` and `outputs/<dataset>/video_breakdowns_benchmark.jsonl`, which is the layout X-CoT expects.
 
 ### Option 2
 
@@ -74,7 +99,7 @@ See `initial_retrievers_cmds.sh` for examples of CLI commands.
 ## Step 3: Run X-CoT
 
 1. Obtain video breakdowns.
-   - Download the provided JSONL files from the [[Hugging Face]](https://huggingface.co/datasets/prasannareddyp/X-CoT/tree/main) link above and place them at: `outputs/<dataset>/video_breakdowns_<mode>.jsonl`
+   - These are downloaded automatically from [[Hugging Face]](https://huggingface.co/datasets/prasannareddyp/X-CoT/tree/main) on the first run, or manually as shown in [Step 1, Option 1](#option-1-recommended-download-from-hugging-face). They are stored at `outputs/<dataset>/video_breakdowns_<mode>.jsonl`.
 
 2. Make sure to have the initial retriever results at `outputs/<dataset>/<method>_ranking_<mode>.jsonl` by following [Step 1](#step-1-obtain-initial-retriever-results).
 
